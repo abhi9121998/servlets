@@ -5,19 +5,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 public class CreateTable extends HttpServlet {
-    private String db_name="none";
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html");
-        
+        String db_name="none";
         PrintWriter out=response.getWriter();
-        out.println("starting db_name"+db_name);
+        out.println("db_name"+db_name);
         if(db_name.equals("none"))
         {
             db_name=(String)request.getAttribute("db_name");
             request.setAttribute("db_name",db_name);
             out.println("db_name"+db_name);
+            //out.println("db_name"+db_name);
         }
         
         String docType ="<!doctype html public \"-//w3c//dtd html 4.0 " +
@@ -32,6 +32,8 @@ public class CreateTable extends HttpServlet {
                     "<div>"+
                     "<center>"+
                     "<form method=\"GET\" action=\"CreateTable\">"+
+                    "<label>Database Name : </label> <br>"+
+                    "<input type=\"text\" name=\"db_name\" value="+db_name+"><br>"+
                     "<label>Table Name : </label> <br>"+
                     "<input type=\"text\" name=\"tb_name\"><br>"+
                     "<label>Number of columns : </label> <br>"+
@@ -44,14 +46,14 @@ public class CreateTable extends HttpServlet {
                     "</div>"+
                     "</body></html>";
                 out.println(docType+page);
-                
         if(request.getParameterMap().containsKey("create_tb"))
         {
+            String db_name_temp=request.getParameter("db_name");
             String tb_name=request.getParameter("tb_name");
             String no_col=request.getParameter("no_col");
             request.setAttribute("tb_name",tb_name);
             request.setAttribute("no_col",no_col);
-            request.setAttribute("db_name",db_name);
+            request.setAttribute("db_name",db_name_temp);
             RequestDispatcher rd = request.getRequestDispatcher("TableCreated");
             rd.forward(request,response);
         }

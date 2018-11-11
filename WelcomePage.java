@@ -33,50 +33,42 @@ public class WelcomePage extends HttpServlet {
                           "<link rel=\"stylesheet\" href=\"https://www.w3schools.com/w3css/4/w3.css\">"+
                           "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css\">"+
                           "<style>"+
+                                ".dropdown {\n" +
+                                "position: relative;\n" +
+                                "display: inline-block;\n" +
+                                "}"+
+                                
+                                ".dropbtn {\n" +
+                                "    background-color: #4CAF50;\n" +
+                                "    color: white;\n" +
+                                "    padding: 16px;\n" +
+                                "    font-size: 16px;\n" +
+                                "    border: none;\n" +
+                                "}"+
                 
-                          ".dropdown-content {\n" +
-                          "    display: none;\n" +
-                          "    position: absolute;\n" +
-                          "    background-color: #f9f9f9;\n" +
-                          "    min-width: 160px;\n" +
-                          "    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n" +
-                          "    z-index: 1;\n" +
-                          "}"+
-                          
-                          ".dropdown-content a {\n" +
-                          "    color: black;\n" +
-                          "    padding: 12px 16px;\n" +
-                          "    text-decoration: none;\n" +
-                          "    display: block;\n" +
-                          "    text-align: left;\n" +
-                          "}"+
-                          
-                          ".dropdown a:hover {background-color: #ddd;}"+
-                          
-                          ".active {\n" +
-                          "    background-color: green;\n" +
-                          "    color: white;\n" +
-                          "}"+
-                          
-                          ".show {display: block;}"+
+                                ".dropdown-content {\n" +
+                                "    display: none;\n" +
+                                "    position: absolute;\n" +
+                                "    background-color: #f1f1f1;\n" +
+                                "    min-width: 160px;\n" +
+                                "    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n" +
+                                "    z-index: 1;\n" +
+                                "}"+
+                                
+                                ".dropdown-content a {\n" +
+                                "    color: black;\n" +
+                                "    padding: 12px 16px;\n" +
+                                "    text-decoration: none;\n" +
+                                "    display: block;\n" +
+                                "}\n" +
+                                "\n" +
+                                ".dropdown-content a:hover {background-color: #ddd;}\n" +
+                                "\n" +
+                                ".dropdown:hover .dropdown-content {display: block;}\n" +
+                                "\n" +
+                                ".dropdown:hover .dropbtn {background-color: #3e8e41;}"+
+                
                           "</style>"+
-                          "<script>"+
-                          
-                          //"function f(){"+
-                          "var dropdown = document.getElementsByClassName(\"dropdown\");"+
-                          "var i;"+
-                          "alert(dropdown.length)"+
-                          "for (i = 0; i < dropdown.length; i++) {"+
-                          "dropdown[i].addEventListener(\"click\", function() {"+
-                          "this.classList.toggle(\"active\");"+
-                          "var dropdownContent = this.nextElementSibling;"+
-                          "if (dropdownContent.style.display === \"block\") {"+
-                          "dropdownContent.style.display = \"none\";"+
-                          "} else {"+
-                          "dropdownContent.style.display = \"block\";}"+
-                          "});}"+
-                
-                          "</script>"+
                           "</head>"+
                           "<body>\n" +
                           "<div class=\"w3-sidebar w3-light-grey w3-bar-block\" style=\"width:25%\">\n" +
@@ -91,7 +83,9 @@ public class WelcomePage extends HttpServlet {
             while(rs.next())
             {
                 String db_name=rs.getString("Db_name");
-                left_panel+="<button class=\"dropdown w3-bar-item w3-button\">"+db_name+"<i class=\"fa fa-caret-down\"></i>"+"</button>"+
+                left_panel+="<div class=\"dropdown\">";
+                        
+                left_panel+="<button class=\"dropbtn\">"+db_name+"<i class=\"fa fa-caret-down\"></i>"+"</button>"+
                             "<div class=\"dropdown-content\">";
                     stmt = conn.createStatement();
                     sql="SELECT tb_name FROM all_tables where db_name='"+db_name+"'";
@@ -100,7 +94,7 @@ public class WelcomePage extends HttpServlet {
                     {
                         left_panel+="<a href=\"#\">"+rs1.getString("tb_name")+"</a>";
                     }
-                left_panel+="</div>";
+                left_panel+="</div></div>";
             }
         }catch(SQLException s){out.println("SQL Exception");}
         catch(ClassNotFoundException c){out.println("Class not found");}
@@ -108,8 +102,9 @@ public class WelcomePage extends HttpServlet {
         left_panel+="</div>\n";
         String page="<div style=\"margin-left:25%\">"+
                     "<div class=\"w3-bar w3-light-grey\">\n" +
-                    "<a href=\"#\" class=\"w3-bar-item w3-button\">Databases</a>\n" +
+                    "<a href=\"ShowDatabases\" class=\"w3-bar-item w3-button\">Databases</a>\n" +
                     "<a href=\"#\" class=\"w3-bar-item w3-button\">SQL</a>\n" +
+                    "<a href=\"AddTable\" class=\"w3-bar-item w3-button\">Add Table</a>\n" +
                     "</div>"+
                     "</div></body></html>";
         out.println(docType+left_panel+page);

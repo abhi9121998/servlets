@@ -43,6 +43,7 @@ public class DatabaseCreated extends HttpServlet {
                 stmt.executeUpdate(sql);
                 
                 request.setAttribute("db_name",db_name);
+                
                 RequestDispatcher rd = request.getRequestDispatcher("CreateTable");
                 rd.forward(request,response);             
                 

@@ -8,9 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
 public class TableCreated extends HttpServlet {
-    private String sql, db_name="none";
-    private String tb_name="none";
-    private String no_col="none";
+    private String sql;
     
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
     static final String DB_URL = "jdbc:mysql://localhost/";
@@ -25,14 +23,17 @@ public class TableCreated extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html");
+        String db_name="none";
+        String tb_name="none";
+        String no_col="none";
         
         PrintWriter out=response.getWriter();
-        
+        //out.println("db_name : "+db_name+"----"+"tb_name : "+tb_name+"----"+"no_col : "+no_col);
         if(db_name.equals("none") && tb_name.equals("none") && no_col.equals("none"))
         {
-            db_name=(String)request.getAttribute("db_name");
-            tb_name=(String)request.getAttribute("tb_name");
-            no_col=(String)request.getAttribute("no_col");
+            db_name=(String)request.getParameter("db_name");
+            tb_name=(String)request.getParameter("tb_name");
+            no_col=(String)request.getParameter("no_col");
             
             out.println("db_name : "+db_name+"----"+"tb_name : "+tb_name+"----"+"no_col : "+no_col);
         }
@@ -41,12 +42,12 @@ public class TableCreated extends HttpServlet {
         {
             if(!request.getParameterMap().containsKey("create"))
             {    
-                colm = Integer.parseInt((String)request.getAttribute("no_col"));
+                colm = Integer.parseInt((String)request.getParameter("no_col"));
                 out.println("int colm : "+colm);
             }
             else
             {
-                colm = Integer.parseInt(request.getParameter("no_col"));
+                colm = Integer.parseInt((String)request.getParameter("no_col"));
                 out.println("int colm : "+colm);
             }
         }catch(NumberFormatException n){out.println("NFE"+n);}
@@ -61,6 +62,8 @@ public class TableCreated extends HttpServlet {
                     "<div>"+
                     "<center>"+
                     "<form method='GET' action=\"TableCreated\">"+
+                    "<label>Database Name : </label><br>"+
+                    "<input type=\"text\" name=\"db_name\" value="+db_name+"><br>"+
                     "<label>Table Name : </label><br>"+
                     "<input type=\"text\" name=\"tb_name\" value="+tb_name+"><br>"+
                     "<label>Number of columns : </label><br>"+
@@ -70,7 +73,6 @@ public class TableCreated extends HttpServlet {
                         "<th>Name</th>"+
                         "<th>Type</th>"+
                         "<th>Size</th>"+
-                        "<th>Default</th>"+
                     "</tr>";
 
                     for(int i=0; i<colm; i++) 
@@ -79,7 +81,6 @@ public class TableCreated extends HttpServlet {
                                 "<td><input type=\"text\" name='na'></td>"+
                                 "<td><input type=\"text\" name='ty'></td>"+
                                 "<td><input type=\"text\" name='size'></td>"+
-                                "<td><input type=\"text\" name='def'></td>"+
                             "</tr><br>";
                     }
                 page+="<tr>"+
@@ -98,7 +99,7 @@ public class TableCreated extends HttpServlet {
             String na[]=request.getParameterValues("na");
             String ty[]=request.getParameterValues("ty");
             String size[]=request.getParameterValues("size");
-            String def[]=request.getParameterValues("def");
+            //String def[]=request.getParameterValues("def");
             sql="CREATE TABLE IF NOT EXISTS `"+db_name+"`.`"+tb_name+"` (";
             for(int i=0; i<colm; i++)
             {
@@ -120,7 +121,6 @@ public class TableCreated extends HttpServlet {
                 conn = DriverManager.getConnection(DB_URL+db_name, USER, PASS);
                 stmt = conn.createStatement();
                 stmt.executeUpdate(sql);
-                //out.println("table created");
                 conn = DriverManager.getConnection(DB_URL+"my_db", USER, PASS);
                 stmt = conn.createStatement();
                 sql="INSERT INTO all_tables (db_name, tb_name) VALUES('"+db_name+"', '"+tb_name+"')";
